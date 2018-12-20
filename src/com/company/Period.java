@@ -1,9 +1,11 @@
 package com.company;
 
+import java.util.List;
+
 public class Period {
-    Teacher teacher;
-    Subject subject;
-    public void addClass(){
+    List<Lecture> lectures;
+
+    public void addLecture(){
 
 
     }

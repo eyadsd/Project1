@@ -1,7 +1,10 @@
 package com.company;
 
+import java.util.List;
+
 public class Teacher {
     String name;
+    List<Subject> subjects;
     int classesPerDay;
     int daysPerWeek;
     int maximumNumberOfLectures;
@@ -26,7 +29,7 @@ public class Teacher {
         }
         occupiedDays = new boolean[daysPerWeek];
     }
-    public boolean assignToPeriod(int dayNumber , int periodNumber,Subject subject){
+    public boolean assignToPeriod(int dayNumber , int periodNumber){
         if(available[dayNumber][periodNumber] == false)
         {
             if(occupiedDays[dayNumber] == false)
