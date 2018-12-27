@@ -29,7 +29,9 @@ public class Teacher {
         }
         occupiedDays = new boolean[daysPerWeek];
     }
-    public boolean assignToPeriod(int dayNumber , int periodNumber){
+
+ /*   public boolean assignToPeriod(int dayNumber , int periodNumber){
+        Teacher newTeacher = new Teacher(available,maximumNumberOfDays,maximumNumberOfLectures)
         if(available[dayNumber][periodNumber] == false)
         {
             if(occupiedDays[dayNumber] == false)
@@ -39,6 +41,19 @@ public class Teacher {
 
             }
             currentNumberOflectures++;
+            return true;
+        }
+        return false;
+        }*/
+
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        Teacher teacher = (Teacher)obj;
+        if(teacher.getName().equals(this.name)){
             return true;
         }
         return false;

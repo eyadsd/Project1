@@ -9,4 +9,18 @@ public class Period {
 
 
     }
+    public boolean isFeasible(Lecture lecture){
+
+        for(Lecture lect :lectures){
+            if (lect.isConflicted(lecture)) {
+
+                return false;
+            }
+
+        }
+        return true;
+
+
+
+    }
 }
