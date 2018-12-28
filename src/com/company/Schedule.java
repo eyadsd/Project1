@@ -1,10 +1,9 @@
 package com.company;
 
 import com.company.building.Building;
+import com.company.building.ClassRoom;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Schedule {
 
@@ -13,13 +12,19 @@ public class Schedule {
         Subject subject;
         Teacher teacher;
         StudentGroup division;
+        ClassRoom classRoom;
 
 
-        public Lecture(Subject subject, Teacher teacher, StudentGroup division) {
+        public Lecture(Subject subject, Teacher teacher, StudentGroup division, ClassRoom classRoom) {
             this.teacher = teacher;
             this.subject = subject;
             this.division = division;
+            this.classRoom = classRoom;
 
+        }
+
+        public ClassRoom getClassRoom() {
+            return classRoom;
         }
 
         public Subject getSubject() {
@@ -37,20 +42,31 @@ public class Schedule {
         }
 
 
-        public boolean isConflicted(Lecture lecture) {
+        public boolean isConflictedTeacher(Teacher teacher) {
 
-            if (this.teacher.equals(lecture.getTeacher())) {
+            if (this.teacher.equals(teacher)) {
                 return true;
             }
-            if (this.division.doesIntersect(lecture.getDivision())) {
-                return true;
-            }
+
 
             return false;
 
         }
-    }
 
+        public boolean isConflictedStudents(StudentGroup studentGroup) {
+            if(this.division.doesIntersect(studentGroup)){
+                return true;
+            }
+            return false;
+        }
+        public boolean isConflictedClassroom(ClassRoom classRoom) {
+
+            if(this.classRoom.equals(classRoom)){
+                return true;
+            }
+            return false;
+        }
+    }
 
     int classesPerDay = Constants.CLASSES_PER_day; // number of classes per day
     int daysPerWeek = Constants.DAYS_PER_WEEK; // number of school days per week
@@ -68,7 +84,19 @@ public class Schedule {
     ArrayList<Lecture>[][] schedule = new ArrayList[daysPerWeek][classesPerDay];
 
 
-    public Schedule(Building building, int numberOfStudents,ArrayList<Subject> subjects) {
+    public Schedule(Building building, int numberOfStudents,ArrayList<Subject> subjects,Set<Teacher> teachers) {
+
+
+        for(int i =0 ; i <daysPerWeek ; i++){
+
+
+            for(int j=0 ; j<classesPerDay;j++){
+                schedule[i][j] = new ArrayList<Lecture>();
+
+            }
+        }
+
+        this.teachers = new HashSet<Teacher>(teachers);
         this.subjects = subjects;
         this.building = building;
         this.numberOfStudents = numberOfStudents;
@@ -85,16 +113,47 @@ public class Schedule {
                 sections.add(new Section(i,subjects));
             }
             branches.add(new Branch(i,subjects,sections));
+
         }
+
+
+
+
 
     }
 
 
-    private boolean isFeasible(Lecture lecture, int period, int day) {
+    public Schedule(Schedule schedule){
+        //TODO add deepcopying
+    }
+
+    public ArrayList<Schedule> getPossibleNextMoves(){
+
+        for(int i=0 ; i <daysPerWeek; i++){
+
+            for(int j=0 ; j <classesPerDay ;j++){
+
+                for(Teacher teacher:teachers){
+                    if(!canAddTeacher(teacher))
+
+                    for()
+
+                }
+
+
+            }
+
+        }
+
+
+
+    }
+
+    private boolean canAddTeacher(Teacher teacher, int period, int day) {
         ArrayList<Lecture> lectures = schedule[day][period];
 
         for (Lecture lect : lectures) {
-            if (lect.isConflicted(lecture)) {
+            if (lect.isConflictedTeacher(teacher)) {
 
                 return false;
             }
