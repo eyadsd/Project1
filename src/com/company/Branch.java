@@ -3,27 +3,26 @@ package com.company;
 import java.util.HashSet;
 import java.util.List;
 
-public class Branch extends Students {
+public class Branch extends StudentGroup {
 
     List<Section> sections;
+    int numberOfSections;
 
-    public Branch(int id , List<String> subjects){
+    public Branch(int id , List<Subject> subjects, List<Section> sections){
 
         allSubjects = new HashSet<Subject>();
         this.id = id;
-
-        for(String classname : subjects){
-
-            Subject s = new Subject(classname,ClassType.theoretical);
-            allSubjects.add(s);
-
+        for (Subject subject : subjects)
+        {
+            if(subject.getType() == ClassType.theoretical)
+            allSubjects.add(subject);
         }
 
     }
 
 
     @Override
-    public boolean doesIntersect(Students division) {
+    public boolean doesIntersect(StudentGroup division) {
         if(!(division instanceof Branch)){
             for(Section s: sections){
                 if(s.doesIntersect(division)){

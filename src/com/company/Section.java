@@ -4,26 +4,23 @@ package com.company;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-class Section extends Students {
+class Section extends StudentGroup {
 
 
 
-    public Section(int id , ArrayList<String> subjects) {
+    public Section(int id , ArrayList<Subject> subjects) {
 
         allSubjects = new HashSet<Subject>();
         this.id = id;
-
-        for(String classname : subjects){
-
-            Subject s = new Subject(classname,ClassType.practical);
-            allSubjects.add(s);
-
-
+        for (Subject subject : subjects)
+        {
+            if(subject.getType() == ClassType.practical)
+                allSubjects.add(subject);
         }
     }
 
     @Override
-    public boolean doesIntersect(Students division) {
+    public boolean doesIntersect(StudentGroup division) {
         if(!(division instanceof Section)){
            division.doesIntersect(this);
 

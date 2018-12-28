@@ -3,7 +3,7 @@ package com.company;
 import java.util.Objects;
 
 public class Subject {
-   private String className;
+    private String className;
     private ClassType type;
 
     public Subject(String className , ClassType type){

@@ -2,7 +2,7 @@ package com.company;
 
 import java.util.Set;
 
-public abstract class Students{
+public abstract class StudentGroup {
     protected Set<Subject> allSubjects;
 
     protected int id;
@@ -22,7 +22,7 @@ public abstract class Students{
     }
 
 
-    public abstract boolean doesIntersect(Students division);
+    public abstract boolean doesIntersect(StudentGroup division);
 
     public int getId() {
         return id;
