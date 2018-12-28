@@ -2,6 +2,7 @@ package com.company;
 
 import com.company.building.Building;
 import com.company.building.ClassRoom;
+import com.company.building.ClassroomType;
 
 import java.util.*;
 
@@ -50,7 +51,6 @@ public class Schedule {
 
 
             return false;
-
         }
 
         public boolean isConflictedStudents(StudentGroup studentGroup) {
@@ -60,6 +60,7 @@ public class Schedule {
             return false;
         }
         public boolean isConflictedClassroom(ClassRoom classRoom) {
+
 
             if(this.classRoom.equals(classRoom)){
                 return true;
@@ -76,15 +77,15 @@ public class Schedule {
     int numberOfSections;
 
     ArrayList<Subject> subjects;
-
+    ArrayList<StudentGroup> studentGroups;
     ArrayList<Branch> branches;
 
     Building building;
-    Set<Teacher> teachers;
+    ArrayList<Teacher> teachers;
     ArrayList<Lecture>[][] schedule = new ArrayList[daysPerWeek][classesPerDay];
 
 
-    public Schedule(Building building, int numberOfStudents,ArrayList<Subject> subjects,Set<Teacher> teachers) {
+    public Schedule(Building building, int numberOfStudents,ArrayList<Subject> subjects,ArrayList<Teacher> teachers) {
 
 
         for(int i =0 ; i <daysPerWeek ; i++){
@@ -96,7 +97,7 @@ public class Schedule {
             }
         }
 
-        this.teachers = new HashSet<Teacher>(teachers);
+        this.teachers = teachers;
         this.subjects = subjects;
         this.building = building;
         this.numberOfStudents = numberOfStudents;
@@ -104,15 +105,19 @@ public class Schedule {
         this.numberOfSections = (int)Math.ceil(numberOfStudents/building.getLabSize()); //temporary variable
         int numberOfSectionsInBranch = (int)Math.ceil(numberOfSections/numberOfBranches);
         this.numberOfSections = numberOfSectionsInBranch * numberOfBranches;//real number of sections
+        this.studentGroups = new ArrayList<StudentGroup>();
 
         for(int i=1 ; i <=this.numberOfBranches ; i++){
             ArrayList<Section> sections = new ArrayList<Section>();
-
             for(int j = 1; j <= numberOfSectionsInBranch; j++)
             {
-                sections.add(new Section(i,subjects));
+                Section section = new Section(i,subjects);
+                sections.add(section);
+                studentGroups.add(section);
             }
-            branches.add(new Branch(i,subjects,sections));
+            Branch branch = new Branch(i,subjects,sections);
+            studentGroups.add(branch);
+            branches.add(branch);
 
         }
 
@@ -126,6 +131,30 @@ public class Schedule {
     public Schedule(Schedule schedule){
         //TODO add deepcopying
     }
+    private void addLecture(Lecture lecture,int day,int period){
+
+        int teacherIndex = teachers.indexOf(lecture.getTeacher());
+        Teacher teacher = teachers.get(teacherIndex);
+        teacher.assignToPeriod(day,period);
+
+        int studentsIndex = teachers.indexOf(lecture.getDivision());
+        StudentGroup studentGroup = studentGroups.get(studentsIndex);
+        studentGroup.removeSubject(lecture.getSubject());
+
+        int subjectIndex = subjects.indexOf(lecture.getSubject());
+        Subject subject = subjects.get(subjectIndex);
+
+        int classIndex = building.allClassRooms().indexOf(lecture.getClassRoom());
+        ClassRoom classRoom = building.allClassRooms().get(classIndex)
+
+        Lecture lecture1 = new Lecture(subject,teacher,studentGroup,classRoom);
+
+        schedule[day][period].add(lecture1);
+
+
+
+
+    }
 
     public ArrayList<Schedule> getPossibleNextMoves(){
 
@@ -133,23 +162,56 @@ public class Schedule {
 
             for(int j=0 ; j <classesPerDay ;j++){
 
-                for(Teacher teacher:teachers){
-                    if(!canAddTeacher(teacher))
+                for(StudentGroup studentGroup: studentGroups){
+                    if(!canAddStudents(studentGroup,i,j))
+                        continue;
 
-                    for()
+                    for(Subject subject : studentGroup.getAllSubjects())
+                    {
+                        for(Teacher teacher: teachers)
+                        {
+                            if(!teacher.isAvailable(i,j)||!canAddTeacher(teacher,i,j)||!teacher.teachesSubject(subject))
+                                continue;
 
+                            for(ClassRoom classroom: building.allClassRooms())
+                            {
+                                if(!canAddClassroom(classroom,i,j) || !matchSubjectClassroom(subject,classroom))
+                                    continue;
+
+                                        
+
+                            }
+
+                        }
+                    }
                 }
+
 
 
             }
 
         }
 
-
+        return new ArrayList<>();
 
     }
+    private boolean canAddStudents(StudentGroup studentGroup, int day , int period)
+    {
+        ArrayList<Lecture> lectures = schedule[day][period];
 
-    private boolean canAddTeacher(Teacher teacher, int period, int day) {
+        for (Lecture lect : lectures) {
+            if (lect.isConflictedStudents(studentGroup)) {
+
+                return false;
+            }
+
+        }
+
+        return true;
+    }
+
+
+    private boolean canAddTeacher(Teacher teacher, int day, int period) {
         ArrayList<Lecture> lectures = schedule[day][period];
 
         for (Lecture lect : lectures) {
@@ -161,5 +223,25 @@ public class Schedule {
         }
 
     return true;
+    }
+    private boolean canAddClassroom(ClassRoom classroom, int day, int period)
+    {
+        ArrayList<Lecture> lectures = schedule[day][period];
+
+        for (Lecture lect : lectures) {
+            if (lect.isConflictedClassroom(classroom)) {
+
+                return false;
+            }
+
+        }
+        return true;
+    }
+    boolean matchSubjectClassroom(Subject subject, ClassRoom classroom)
+    {
+        if((subject.getType() == ClassType.theoretical && classroom.getType() == ClassroomType.theater)
+                ||(subject.getType() == ClassType.practical && classroom.getType() == ClassroomType.lab))
+            return true;
+        return false;
     }
 }

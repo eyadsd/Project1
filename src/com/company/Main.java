@@ -7,26 +7,20 @@ public class Main {
     public static void main(String[] args) {
 
 
-        ArrayList<String>[][] list= new ArrayList[2][2];
-
-        for(int i =0 ; i <2 ; i++){
-
-
-            for(int j=0 ; j<2;j++){
-                list[i][j] = new ArrayList<String>();
-
-            }
-        }
-        ArrayList<String> fuckyou = new ArrayList<String>();
-        list[0][0] = fuckyou;
-        list[0][0].add("fuckyou");
-        list[0][0].add("fuckyou");
-        list[0][0].add("fuckyou");
-        list[0][0].add("fuckyou");
+       StudentGroup branch = new Section(1,new ArrayList<Subject>());
+       StudentGroup branch2 = new Section(1,new ArrayList<Subject>());
 
 
-        System.out.println(list[0][0]);
+       if(branch.equals(branch2))
+       {
+           System.out.print("hello motherfucker");
 
+       }
+
+       else
+       {
+           System.out.print("iiiiiiiiiiiiiii");
+       }
 
 
     }

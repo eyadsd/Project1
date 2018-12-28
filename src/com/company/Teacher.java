@@ -3,6 +3,11 @@ package com.company;
 import java.util.List;
 
 public class Teacher {
+    public enum Availablity{
+        unavailable,
+        available,
+        preffered
+    }
     String name;
     List<Subject> subjects;
     int classesPerDay;
@@ -12,39 +17,25 @@ public class Teacher {
     int maximumNumberOfDays;
     int currentNumberOfDays;
     boolean [] occupiedDays; // the days that this teacher gives lectures in
-    boolean[][] available;
+    Availablity[][] availablity;
 
-    public Teacher(boolean[][] available,int maximumNumberOfDays,int maximumNumberOfLectures){
+    public Teacher(Availablity[][] availabilty,int maximumNumberOfDays,int maximumNumberOfLectures){
         currentNumberOflectures = 0;
         currentNumberOfDays = 0;
         this.maximumNumberOfDays = maximumNumberOfDays;
         this.maximumNumberOfLectures = maximumNumberOfLectures;
-        this.available = new boolean[daysPerWeek][classesPerDay];
+        this.availablity = new Availablity[daysPerWeek][classesPerDay];
         for (int i = 0;i < daysPerWeek;i++)
         {
             for ( int j = 0; j<classesPerDay;j++)
             {
-                this.available[i][j] = available[i][j];
+                this.availablity[i][j] = availabilty[i][j];
             }
         }
         occupiedDays = new boolean[daysPerWeek];
     }
 
- /*   public boolean assignToPeriod(int dayNumber , int periodNumber){
-        Teacher newTeacher = new Teacher(available,maximumNumberOfDays,maximumNumberOfLectures)
-        if(available[dayNumber][periodNumber] == false)
-        {
-            if(occupiedDays[dayNumber] == false)
-            {
-                currentNumberOfDays++;
-                occupiedDays[dayNumber] = true;
 
-            }
-            currentNumberOflectures++;
-            return true;
-        }
-        return false;
-        }*/
 
     public String getName() {
         return name;
@@ -58,4 +49,24 @@ public class Teacher {
         }
         return false;
     }
+    public boolean isAvailable(int day, int period)
+    {
+        if(this.availablity[day][period] == Availablity.unavailable)
+            return false;
+        return true;
+    }
+    public boolean teachesSubject(Subject subject)
+    {
+        return subjects.contains(subject);
+    }
+    public void assignToPeriod(int dayNumber , int periodNumber){
+        if(occupiedDays[dayNumber] == false)
+         {
+             currentNumberOfDays++;
+             occupiedDays[dayNumber] = true;
+
+         }
+         currentNumberOflectures++;
+
+        }
 }

@@ -27,4 +27,37 @@ public abstract class StudentGroup {
     public int getId() {
         return id;
     }
+
+    public Set<Subject> getAllSubjects() {
+        return allSubjects;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if(o==null){
+            return false;
+        }
+        if ( getClass() != o.getClass()){
+
+            return false;
+
+        }
+
+        StudentGroup that = (StudentGroup) o;
+
+        return id == that.id;
+    }
+    public void removeSubject(Subject subject){
+        allSubjects.remove(subject);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = allSubjects != null ? allSubjects.hashCode() : 0;
+        result = 31 * result + id;
+        return result;
+    }
 }

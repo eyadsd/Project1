@@ -2,6 +2,7 @@ package com.company.building;
 
 import com.company.Constants;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,15 +28,24 @@ public class Building {
         theaters = new ArrayList<ClassRoom>();
         for (int i = 1; i<=numberOfTheaters;i++)
         {
-            theaters.add(new ClassRoom(i));
+
+            theaters.add(new ClassRoom(i, ClassroomType.theater));
         }
         for (int i = 1; i<=numberOfLabs;i++)
         {
-            labs.add(new ClassRoom(i));
+            labs.add(new ClassRoom(i,ClassroomType.lab));
         }
 
 
     }
+    public ArrayList<ClassRoom> allClassRooms()
+    {
+        ArrayList<ClassRoom> all = new ArrayList<ClassRoom>();
+        all.addAll(theaters);
+        all.addAll(labs);
+        return all;
+    }
+
     public int getNumberOfTheaters() {
         return numberOfTheaters;
     }

@@ -1,12 +1,16 @@
 package com.company.building;
 
+import com.company.Subject;
+
 import java.util.Objects;
 
 public class ClassRoom {
     int id;
-    public ClassRoom(int id)
+    ClassroomType type;
+    public ClassRoom(int id,ClassroomType type)
     {
         this.id = id;
+        this.type = type;
 
     }
 
@@ -21,5 +25,9 @@ public class ClassRoom {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+    public ClassroomType getType()
+    {
+        return this.type;
     }
 }
