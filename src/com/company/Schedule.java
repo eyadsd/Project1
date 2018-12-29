@@ -67,6 +67,11 @@ public class Schedule {
             }
             return false;
         }
+        public ClassType getSubjectType()
+        {
+            return subject.getType();
+        }
+
     }
 
     int classesPerDay = Constants.CLASSES_PER_day; // number of classes per day
@@ -145,7 +150,7 @@ public class Schedule {
         Subject subject = subjects.get(subjectIndex);
 
         int classIndex = building.allClassRooms().indexOf(lecture.getClassRoom());
-        ClassRoom classRoom = building.allClassRooms().get(classIndex)
+        ClassRoom classRoom = building.allClassRooms().get(classIndex);
 
         Lecture lecture1 = new Lecture(subject,teacher,studentGroup,classRoom);
 
@@ -178,7 +183,7 @@ public class Schedule {
                                 if(!canAddClassroom(classroom,i,j) || !matchSubjectClassroom(subject,classroom))
                                     continue;
 
-                                        
+
 
                             }
 
@@ -244,4 +249,71 @@ public class Schedule {
             return true;
         return false;
     }
+
+    private int teacherPreferences()
+    {
+        int weight = 0;
+        for(Teacher teacher : teachers)
+        {
+            //3rd pereference
+            if(teacher.lecturesExceeded())
+            {
+                weight += 1;
+            }
+            //4thrd preference
+            if(teacher.daysExceeded())
+            {
+                weight+=1;
+            }
+            //2nd pereference
+            for (int i = 0;i<daysPerWeek;i++)
+            {
+                for(int j = 0 ; j<classesPerDay;j++)
+                {
+                    if(teacher.occupation[daysPerWeek][classesPerDay] == true &&
+                            teacher.availablity[daysPerWeek][classesPerDay] == Teacher.Availablity.preffered)
+                    {
+                        weight +=1;
+                    }
+                }
+            }
+        }
+        return weight;
+    }
+
+    public int practicalLectureDistribution()
+    {
+        int weight = 0;
+        int count = 0;
+        for(int i = 0;i<daysPerWeek;i++)
+        {
+            if(hasPractical(i))
+            {
+                count +=1;
+            }
+        }
+        if(count>1)
+        {
+            weight = count;
+        }
+        return weight;
+    }
+   
+
+    public boolean hasPractical(int day)
+    {
+        for(int j = 0; j<classesPerDay;j++)
+        {
+            for(Lecture lecture : schedule[daysPerWeek][classesPerDay])
+            {
+                if(lecture.getSubjectType() == ClassType.practical)
+                {
+                    return true;
+                }
+            }
+
+        }
+        return false;
+    }
+
 }

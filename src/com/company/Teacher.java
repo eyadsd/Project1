@@ -18,6 +18,7 @@ public class Teacher {
     int currentNumberOfDays;
     boolean [] occupiedDays; // the days that this teacher gives lectures in
     Availablity[][] availablity;
+    boolean[][] occupation; //which periods is the teacher assigned to
 
     public Teacher(Availablity[][] availabilty,int maximumNumberOfDays,int maximumNumberOfLectures){
         currentNumberOflectures = 0;
@@ -33,6 +34,7 @@ public class Teacher {
             }
         }
         occupiedDays = new boolean[daysPerWeek];
+        occupation = new boolean[daysPerWeek][classesPerDay];
     }
 
 
@@ -66,7 +68,24 @@ public class Teacher {
              occupiedDays[dayNumber] = true;
 
          }
+         occupation[dayNumber][periodNumber] = true;
          currentNumberOflectures++;
 
         }
+    public boolean lecturesExceeded()
+    {
+        if(currentNumberOflectures >=maximumNumberOfLectures)
+            return true;
+        return false;
+    }
+    public int getCurrentNumberOfDays()
+    {
+        return this.currentNumberOfDays;
+    }
+    public boolean daysExceeded()
+    {
+        if (currentNumberOfDays > maximumNumberOfDays)
+            return true;
+        return false;
+    }
 }
