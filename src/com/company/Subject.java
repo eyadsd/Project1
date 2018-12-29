@@ -10,6 +10,10 @@ public class Subject {
         this.className=className;
         this.type=type;
     }
+    public Subject(Subject subject){
+        this.type=subject.type;
+        this.className=subject.className;
+    }
 
     public String getClassName() {
         return className;
@@ -34,4 +38,14 @@ public class Subject {
     public int hashCode() {
         return Objects.hash(className, type);
     }
+
+    @Override
+    public String toString() {
+        return "Subject{" +
+                "className='" + className + '\'' +
+                ", type=" + type +
+                '}';
+    }
+
+
 }

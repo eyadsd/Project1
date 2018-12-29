@@ -1,17 +1,21 @@
 package com.company;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Teacher {
     public enum Availablity{
         unavailable,
         available,
-        preffered
+        preffered;
+
+
     }
     String name;
     List<Subject> subjects;
-    int classesPerDay;
-    int daysPerWeek;
+    int classesPerDay = Constants.CLASSES_PER_day;
+    int daysPerWeek=Constants.DAYS_PER_WEEK;
     int maximumNumberOfLectures;
     int currentNumberOflectures; // number of lectures for this teacher per week
     int maximumNumberOfDays;
@@ -19,7 +23,9 @@ public class Teacher {
     boolean [] occupiedDays; // the days that this teacher gives lectures in
     Availablity[][] availablity;
 
-    public Teacher(Availablity[][] availabilty,int maximumNumberOfDays,int maximumNumberOfLectures){
+    public Teacher(String name, Availablity[][] availabilty, int maximumNumberOfDays, int maximumNumberOfLectures, ArrayList<Subject> subjects){
+        this.name =name;
+        this.subjects = subjects;
         currentNumberOflectures = 0;
         currentNumberOfDays = 0;
         this.maximumNumberOfDays = maximumNumberOfDays;
@@ -34,6 +40,31 @@ public class Teacher {
         }
         occupiedDays = new boolean[daysPerWeek];
     }
+    public Teacher(Teacher teacher){
+
+        this.name=teacher.name;
+        this.currentNumberOfDays=teacher.currentNumberOfDays;
+        this.currentNumberOflectures=teacher.currentNumberOflectures;
+        this.maximumNumberOfDays=teacher.maximumNumberOfDays;
+        this.maximumNumberOfLectures=teacher.maximumNumberOfLectures;
+        this.subjects=new ArrayList<Subject>();
+        for(Subject subject: teacher.subjects){
+            this.subjects.add(new Subject(subject));
+        }
+        this.availablity = new Availablity[daysPerWeek][classesPerDay];
+        for (int i = 0;i < daysPerWeek;i++)
+        {
+            for ( int j = 0; j<classesPerDay;j++)
+            {
+                this.availablity[i][j] = teacher.availablity[i][j];
+            }
+        }
+        this.occupiedDays = new boolean[daysPerWeek];
+        for(int i =0; i <daysPerWeek; i++){
+
+            this.occupiedDays[i]=teacher.occupiedDays[i];
+        }
+    }
 
 
 
@@ -41,14 +72,7 @@ public class Teacher {
         return name;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        Teacher teacher = (Teacher)obj;
-        if(teacher.getName().equals(this.name)){
-            return true;
-        }
-        return false;
-    }
+
     public boolean isAvailable(int day, int period)
     {
         if(this.availablity[day][period] == Availablity.unavailable)
@@ -69,4 +93,27 @@ public class Teacher {
          currentNumberOflectures++;
 
         }
+
+    @Override
+    public boolean equals(Object obj) {
+        Teacher teacher = (Teacher)obj;
+        if(teacher.getName().equals(this.name)){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
+
+    @Override
+    public String toString() {
+        return "Teacher{" +
+                "name='" + name + '\'' +
+                ", currentNumberOflectures=" + currentNumberOflectures +
+                ", currentNumberOfDays=" + currentNumberOfDays +
+                '}';
+    }
 }

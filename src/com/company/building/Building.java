@@ -38,6 +38,23 @@ public class Building {
 
 
     }
+    public Building(Building building){
+        this.numberOfTheaters=building.numberOfTheaters;
+        this.numberOfLabs=building.numberOfLabs;
+        this.theaterSize=building.theaterSize;
+        this.labSize=building.labSize;
+        this.labs = new ArrayList<ClassRoom>();
+        this.theaters = new ArrayList<ClassRoom>();
+        for(ClassRoom classRoom:building.labs){
+            this.labs.add(new ClassRoom(classRoom));
+        }
+        for(ClassRoom classRoom:building.theaters){
+            this.theaters.add(new ClassRoom(classRoom));
+        }
+
+
+
+    }
     public ArrayList<ClassRoom> allClassRooms()
     {
         ArrayList<ClassRoom> all = new ArrayList<ClassRoom>();
