@@ -94,9 +94,12 @@ public class Teacher {
     }
 
     public boolean lecturesExceeded() {
-        if (currentNumberOflectures >= maximumNumberOfLectures)
+        if (currentNumberOflectures >= maximumNumberOfLectures){
+
             return true;
-        return false;
+        }
+
+       return false;
     }
 
     public int getCurrentNumberOfDays() {
@@ -104,10 +107,12 @@ public class Teacher {
     }
 
     public boolean daysExceeded() {
-        if (currentNumberOfDays > maximumNumberOfDays)
+        if (currentNumberOfDays >= maximumNumberOfDays){
             return true;
-        return false;
+        }
 
+
+        return false;
 
     }
 

@@ -97,6 +97,21 @@ public class Schedule {
             return subject.getType();
         }
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Lecture lecture = (Lecture) o;
+            return Objects.equals(subject, lecture.subject) &&
+                    Objects.equals(teacher, lecture.teacher) &&
+                    Objects.equals(division, lecture.division) &&
+                    Objects.equals(classRoom, lecture.classRoom);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(subject, teacher, division, classRoom);
+        }
 
         @Override
         public String toString() {
@@ -124,12 +139,16 @@ public class Schedule {
     ArrayList<StudentGroup> studentGroups;
     ArrayList<Branch> branches ;
 
+
+
     Building building;
     ArrayList<Teacher> teachers;
+
     ArrayList<Lecture>[][] schedule ;
 
 
     public Schedule(Building building, int numberOfStudents,ArrayList<Subject> subjects,ArrayList<Teacher> teachers) {
+
 
 
         branches =new ArrayList<>();
@@ -261,6 +280,7 @@ public class Schedule {
 
         schedule[day][period].add(lecture1);
 
+        calculateNewWeight(lecture1,day,period);
 
 
 
@@ -312,9 +332,83 @@ public class Schedule {
 
     }
 
+    private void calculateNewWeight(Lecture lecture,int day,int period){
+
+        int weight1_T=1;
+        int weight1_S =1;
+        int weight2=1;
+        int weight3 = 1;
+        int weight4 =1;
+        int weight5 =1;
+        int weight6 = 1;
+        int weight7 =1;
+
+        Teacher teacher = lecture.getTeacher();
+
+        if(doesCreateSpacesbetweenlectures_Students(lecture,day,period)){
+            this.weight+=weight1_S;
+
+        }
+        if(doesCreateSpacesbetweenlectures_Teachers(lecture,day,period)){
+            this.weight+=weight1_T;
+
+        }
+
+        if(!teacher.isPreferredPeriod(day,period)){
+            this.weight+=weight2;
+        }
+
+        if(teacher.lecturesExceeded()) {
+            this.weight += weight3;
+        }
+        if(teacher.daysExceeded()) {
+            this.weight += weight4;
+
+        }
 
 
-    private boolean doesCreateSpacesbetweenlectures(Lecture lecture,int day, int period){
+
+        if(DoesExceedThreeLectures(lecture.getDivision(),day)){
+            this.weight+=weight5;
+        }
+
+
+        if (isPracticalAfterTheoritical(lecture,day,period)){
+
+            this.weight+=weight6;
+        }
+
+        if(!lecture.isTheoritical()){
+            if(isMoreThanOnePracticalLecture(lecture,day,period)){
+
+                this.weight+=weight7;
+            }
+        }
+
+
+
+
+    }
+
+
+    private boolean doesCreateSpacesbetweenlectures_Students(Lecture lecture,int day, int period){
+
+
+
+        int l=0;
+        for(int i=period -1; i >=0 ; i--){
+            ArrayList<Lecture> lectures = schedule[day][i];
+
+
+            for(Lecture lecture1 : lectures){
+                if(lecture1.isConflictedStudents(lecture.getDivision() ) && l>0){
+                     return true;
+
+                }
+
+            }
+            l++;
+        }
 
 
 
@@ -323,7 +417,35 @@ public class Schedule {
 
     }
 
-    private boolean arePracticalAfterTheoritical(Lecture lecture,int day , int period){
+    private boolean doesCreateSpacesbetweenlectures_Teachers(Lecture lecture,int day, int period){
+
+
+
+        int l=0;
+        for(int i=period -1; i >=0 ; i--){
+            ArrayList<Lecture> lectures = schedule[day][i];
+
+
+            for(Lecture lecture1 : lectures){
+                if(lecture1.isConflictedTeacher(lecture.getTeacher() ) && l>0){
+                    return true;
+
+                }
+
+            }
+            l++;
+        }
+
+
+
+
+        return false;
+
+    }
+
+
+
+    private boolean isPracticalAfterTheoritical(Lecture lecture,int day , int period){
 
         if(lecture.isTheoritical()){
 
@@ -331,7 +453,7 @@ public class Schedule {
                 ArrayList<Lecture> lectures = schedule[day][i];
 
                 for(Lecture lecture1 : lectures){
-                    if(!lecture1.isTheoritical()){
+                    if(!lecture1.isTheoritical() && lecture1.isConflictedStudents(lecture.getDivision())){
                         return false;
                     }
                 }
@@ -345,7 +467,7 @@ public class Schedule {
                 ArrayList<Lecture> lectures = schedule[day][i];
 
                 for(Lecture lecture1 : lectures){
-                    if(lecture1.isTheoritical()){
+                    if(lecture1.isTheoritical() && lecture1.isConflictedStudents(lecture.getDivision())){
                         return false;
                     }
                 }
@@ -378,6 +500,25 @@ public class Schedule {
         return false;
     }
 
+    private boolean isMoreThanOnePracticalLecture(Lecture lecture,int day ,int period){
+
+        StudentGroup studentGroup = lecture.getDivision();
+
+        for(int i=0 ; i<classesPerDay; i++){
+
+            ArrayList<Lecture> lectures = schedule[day][i];
+
+            for(Lecture lecture1 : lectures){
+                if( lecture1.isConflictedStudents(studentGroup) && i!=period && !lecture1.isTheoritical()){
+                    return true;
+                }
+            }
+        }
+
+        return false;
+
+    }
+
     private boolean canAddStudents(StudentGroup studentGroup, int day , int period)
     {
         ArrayList<Lecture> lectures = schedule[day][period];
@@ -407,6 +548,7 @@ public class Schedule {
 
     return true;
     }
+
     private boolean canAddClassroom(ClassRoom classroom, int day, int period)
     {
         ArrayList<Lecture> lectures = schedule[day][period];
@@ -430,70 +572,6 @@ public class Schedule {
 
 
 
-  /*  private int teacherPreferences()
-    {
-        int weight = 0;
-        for(Teacher teacher : teachers)
-        {
-            //3rd pereference
-            if(teacher.lecturesExceeded())
-            {
-                weight += 1;
-            }
-            //4thrd preference
-            if(teacher.daysExceeded())
-            {
-                weight+=1;
-            }
-            //2nd pereference
-            for (int i = 0;i<daysPerWeek;i++)
-            {
-                for(int j = 0 ; j<classesPerDay;j++)
-                {
-                    if(teacher.occupation[daysPerWeek][classesPerDay]  &&
-                            teacher.availablity[daysPerWeek][classesPerDay] == Teacher.Availablity.preffered)
-                    {
-                        weight +=1;
-                    }
-                }
-            }
-        }
-        return weight;
-    }
-*/
-    public int practicalLectureDistribution()
-    {
-        int weight = 0;
-        int count = 0;
-        for(int i = 0;i<daysPerWeek;i++)
-        {
-            if(hasPractical(i))
-            {
-                count +=1;
-            }
-        }
-        if(count>1)
-        {
-            weight = count;
-        }
-        return weight;
-    }
-
-    public boolean hasPractical(int day)
-    {
-        for(int j = 0; j<classesPerDay;j++)
-        {
-            for(Lecture lecture : schedule[daysPerWeek][classesPerDay])
-            {
-                if(lecture.getSubjectType() == ClassType.practical)
-                {
-                    return true;
-                }
-            }
-
-        }
-        return false;
-    }
 
     public int get_weight(){
 
@@ -525,5 +603,19 @@ public class Schedule {
         }
 
         return str.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Schedule schedule1 = (Schedule) o;
+        return Arrays.equals(schedule, schedule1.schedule);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(schedule);
     }
 }
