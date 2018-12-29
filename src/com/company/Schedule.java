@@ -573,10 +573,19 @@ public class Schedule {
 
 
 
-    public int get_weight(){
+    public int getWeight(){
 
         return weight;
 
+    }
+    public boolean isAccepted()
+    {
+        for (StudentGroup studentGroup : studentGroups)
+        {
+            if(!studentGroup.isEmpty())
+                return false;
+        }
+        return true;
     }
     @Override
     public String toString() {
@@ -610,12 +619,19 @@ public class Schedule {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Schedule schedule1 = (Schedule) o;
-        return Arrays.equals(schedule, schedule1.schedule);
-
+        for(int i = 0; i<daysPerWeek;i++)
+        {
+            for(int j = 0;j<classesPerDay;j++)
+            {
+                if(!(schedule1.schedule[i][j].equals(this.schedule[i][j])))
+                    return false;
+            }
+        }
+        return true;
     }
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(schedule);
+        return Arrays.deepHashCode(schedule);
     }
 }

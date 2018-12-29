@@ -71,4 +71,7 @@ public abstract class StudentGroup {
         result = 31 * result + id;
         return result;
     }
+    public boolean isEmpty(){
+        return allSubjects.isEmpty();
+    }
 }

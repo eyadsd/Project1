@@ -58,6 +58,10 @@ public class Main {
 
         System.out.print(schedules2.get(0));
 
+        AStar astar = new AStar();
+
+
+        astar.Search(schedule);
 
 
 

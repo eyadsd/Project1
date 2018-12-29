@@ -32,7 +32,9 @@ public class AStar {
             if(v.isAccepted())
             {
                 acceptedStates.add(v);
+                System.out.print("accepted state");
             }
+
             for (Schedule schedule : possibleStates = v.getPossibleNextMoves()) {
                 if(!visited.contains(schedule))
                 {
