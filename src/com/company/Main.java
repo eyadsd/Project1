@@ -47,13 +47,16 @@ public class Main {
 
         ArrayList<Schedule> schedules = schedule.getPossibleNextMoves();
 
+
+
+
         System.out.print(schedules.get(0));
         System.out.print(schedules.get(1));
         System.out.print(schedules.get(2));
 
-      /*  ArrayList<Schedule> schedules2= schedules.get(0).getPossibleNextMoves();
+        ArrayList<Schedule> schedules2= schedules.get(0).getPossibleNextMoves();
 
-        System.out.print(schedules2.size());*/
+        System.out.print(schedules2.get(0));
 
 
 

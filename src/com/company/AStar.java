@@ -9,13 +9,13 @@ public class AStar {
     public AStar()
     {
         pqueue = new PriorityQueue<Schedule>(1, new Comparator<Schedule>() {
-        public int compare(Schedule node1, Schedule node2) {
-            if (node1.getWeight() < node2.getWeight())
-                return 1;
-            else if (node1.getWeight() > node2.getWeight())
-                return -1;
-            return 0;
-        }
+            public int compare(Schedule node1, Schedule node2) {
+                if (node1.getWeight() < node2.getWeight())
+                    return 1;
+                else if (node1.getWeight() > node2.getWeight())
+                    return -1;
+                return 0;
+            }
 
         });
         acceptedStates = new ArrayList<Schedule>();
