@@ -42,8 +42,7 @@ public class Subject {
     @Override
     public String toString() {
         return "Subject{" +
-                "className='" + className + '\'' +
-                ", type=" + type +
+                "class='" + className + '\'' +
                 '}';
     }
 

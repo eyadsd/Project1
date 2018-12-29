@@ -35,7 +35,6 @@ public class ClassRoom {
     public String toString() {
         return "ClassRoom{" +
                 "id=" + id +
-                ", type=" + type +
                 '}';
     }
 

@@ -61,7 +61,6 @@ public abstract class StudentGroup {
     @Override
     public String toString() {
         return "StudentGroup{" +
-                "allSubjects=" + allSubjects +
                 ", id=" + id +
                 '}';
     }
