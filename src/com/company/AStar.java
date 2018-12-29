@@ -32,7 +32,8 @@ public class AStar {
             if(v.isAccepted())
             {
                 acceptedStates.add(v);
-                System.out.print("accepted state");
+                System.out.print("accepted state\n");
+                v.print();
             }
 
             for (Schedule schedule : possibleStates = v.getPossibleNextMoves()) {

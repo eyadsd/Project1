@@ -168,9 +168,9 @@ public class Schedule {
         this.building = building;
 
         this.numberOfStudents = numberOfStudents;
-        this.numberOfBranches = (int)Math.ceil(numberOfStudents/building.getTheaterSize());
-        this.numberOfSections = (int)Math.ceil(numberOfStudents/building.getLabSize()); //temporary variable
-        int numberOfSectionsInBranch = (int)Math.ceil(numberOfSections/numberOfBranches);
+        this.numberOfBranches = (int)Math.ceil((float)numberOfStudents/(float)building.getTheaterSize());
+        this.numberOfSections = (int)Math.ceil((float)numberOfStudents/(float)building.getLabSize()); //temporary variable
+        int numberOfSectionsInBranch = (int)Math.ceil((float)numberOfSections/(float)numberOfBranches);
         this.numberOfSections = numberOfSectionsInBranch * numberOfBranches;//real number of sections
         this.studentGroups = new ArrayList<StudentGroup>();
 
@@ -190,6 +190,7 @@ public class Schedule {
             branches.add(branch);
 
         }
+        int garbage = 0;
 
 
 
@@ -633,5 +634,26 @@ public class Schedule {
     @Override
     public int hashCode() {
         return Arrays.deepHashCode(schedule);
+    }
+
+    public void print()
+    {
+        for(int i = 0;i<daysPerWeek;i++)
+        {
+            for(int j = 0;j<classesPerDay;j++)
+            {
+                System.out.print("period"+i+" "+j);
+                for(Lecture lecture: schedule[i][j])
+                {
+                    System.out.print(lecture.toString());
+                    System.out.print("    ");
+                }
+            }
+            System.out.print("\n");
+
+        }
+        System.out.print("weight ="+weight);
+        System.out.print("\ndone\n\n");
+
     }
 }
