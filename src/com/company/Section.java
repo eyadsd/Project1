@@ -8,6 +8,8 @@ class Section extends StudentGroup {
 
 
 
+
+
     public Section(int id , ArrayList<Subject> subjects) {
 
         allSubjects = new HashSet<Subject>();
@@ -16,6 +18,14 @@ class Section extends StudentGroup {
         {
             if(subject.getType() == ClassType.practical)
                 allSubjects.add(subject);
+        }
+    }
+
+    public Section(Section section){
+        this.id = section.id;
+        this.allSubjects = new HashSet<Subject>();
+        for (Subject subject: section.allSubjects){
+            this.allSubjects.add(new Subject(subject));
         }
     }
 

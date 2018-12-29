@@ -1,11 +1,13 @@
 package com.company;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public abstract class StudentGroup {
     protected Set<Subject> allSubjects;
 
     protected int id;
+
 
 
     public boolean isSatisfied()
@@ -32,6 +34,12 @@ public abstract class StudentGroup {
         return allSubjects;
     }
 
+
+    public void removeSubject(Subject subject){
+        allSubjects.remove(subject);
+
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -49,9 +57,13 @@ public abstract class StudentGroup {
 
         return id == that.id;
     }
-    public void removeSubject(Subject subject){
-        allSubjects.remove(subject);
 
+    @Override
+    public String toString() {
+        return "StudentGroup{" +
+                "allSubjects=" + allSubjects +
+                ", id=" + id +
+                '}';
     }
 
     @Override

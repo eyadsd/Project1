@@ -16,11 +16,28 @@ public class Schedule {
         ClassRoom classRoom;
 
 
+
+
         public Lecture(Subject subject, Teacher teacher, StudentGroup division, ClassRoom classRoom) {
             this.teacher = teacher;
             this.subject = subject;
             this.division = division;
             this.classRoom = classRoom;
+
+        }
+        public Lecture(Lecture lecture){
+            this.teacher = new Teacher(lecture.teacher);
+            if(lecture.division instanceof Section){
+
+                this.division= new Section((Section) lecture.division);
+            }
+            else {
+                this.division = new Branch((Branch)lecture.division);
+
+            }
+
+            this.subject = new Subject(lecture.subject);
+            this.classRoom = new ClassRoom(lecture.classRoom);
 
         }
 
@@ -72,6 +89,18 @@ public class Schedule {
             return subject.getType();
         }
 
+
+        @Override
+        public String toString() {
+            return "Lecture(" +
+                    "S=" + subject +
+                    ", T=" + teacher +
+                    ", D=" + division +
+                    ", C=" + classRoom +
+                    ')';
+        }
+
+
     }
 
     int classesPerDay = Constants.CLASSES_PER_day; // number of classes per day
@@ -83,15 +112,18 @@ public class Schedule {
 
     ArrayList<Subject> subjects;
     ArrayList<StudentGroup> studentGroups;
-    ArrayList<Branch> branches;
+    ArrayList<Branch> branches ;
 
     Building building;
     ArrayList<Teacher> teachers;
-    ArrayList<Lecture>[][] schedule = new ArrayList[daysPerWeek][classesPerDay];
+    ArrayList<Lecture>[][] schedule ;
 
 
     public Schedule(Building building, int numberOfStudents,ArrayList<Subject> subjects,ArrayList<Teacher> teachers) {
 
+
+        branches =new ArrayList<>();
+        schedule = new ArrayList[daysPerWeek][classesPerDay];
 
         for(int i =0 ; i <daysPerWeek ; i++){
 
@@ -105,6 +137,7 @@ public class Schedule {
         this.teachers = teachers;
         this.subjects = subjects;
         this.building = building;
+
         this.numberOfStudents = numberOfStudents;
         this.numberOfBranches = (int)Math.ceil(numberOfStudents/building.getTheaterSize());
         this.numberOfSections = (int)Math.ceil(numberOfStudents/building.getLabSize()); //temporary variable
@@ -133,16 +166,74 @@ public class Schedule {
     }
 
 
+
     public Schedule(Schedule schedule){
-        //TODO add deepcopying
+
+        this.building = new Building(schedule.building);
+
+        this.teachers = new ArrayList<>();
+        for(Teacher teacher: schedule.teachers){
+            this.teachers.add(new Teacher(teacher));
+        }
+        this.subjects = new ArrayList<>();
+        for(Subject subject : schedule.subjects){
+            this.subjects.add(new Subject(subject));
+        }
+
+        this.numberOfSections=schedule.numberOfSections;
+        this.numberOfBranches=schedule.numberOfBranches;
+        this.numberOfStudents=schedule.numberOfStudents;
+
+        this.studentGroups = new ArrayList<>();
+
+        for(StudentGroup studentGroup : schedule.studentGroups){
+            if(studentGroup instanceof Section){
+
+                this.studentGroups.add(new Section((Section) studentGroup));
+            }
+            else{
+                this.studentGroups.add(new Branch((Branch)studentGroup));
+
+            }
+        }
+
+        this.branches = new ArrayList<>();
+
+        for(Branch branch : schedule.branches){
+
+            this.branches.add(new Branch(branch));
+        }
+
+        this.schedule = new ArrayList[daysPerWeek][classesPerDay];
+
+        for(int i =0 ; i <daysPerWeek ; i++){
+
+
+            for(int j=0 ; j<classesPerDay;j++){
+                this.schedule[i][j] = new ArrayList<>();
+                for(Lecture lecture : schedule.schedule[i][j]){
+                    this.schedule[i][j].add(new Lecture(lecture));
+                }
+
+            }
+        }
+
+
+
+
+
+
+
+
     }
+
     private void addLecture(Lecture lecture,int day,int period){
 
         int teacherIndex = teachers.indexOf(lecture.getTeacher());
         Teacher teacher = teachers.get(teacherIndex);
         teacher.assignToPeriod(day,period);
 
-        int studentsIndex = teachers.indexOf(lecture.getDivision());
+        int studentsIndex = studentGroups.indexOf(lecture.getDivision());
         StudentGroup studentGroup = studentGroups.get(studentsIndex);
         studentGroup.removeSubject(lecture.getSubject());
 
@@ -162,6 +253,7 @@ public class Schedule {
     }
 
     public ArrayList<Schedule> getPossibleNextMoves(){
+        ArrayList<Schedule> schedules = new ArrayList<>();
 
         for(int i=0 ; i <daysPerWeek; i++){
 
@@ -175,7 +267,7 @@ public class Schedule {
                     {
                         for(Teacher teacher: teachers)
                         {
-                            if(!teacher.isAvailable(i,j)||!canAddTeacher(teacher,i,j)||!teacher.teachesSubject(subject))
+                            if(!teacher.isAvailable(i,j) ||!canAddTeacher(teacher,i,j)||!teacher.teachesSubject(subject))
                                 continue;
 
                             for(ClassRoom classroom: building.allClassRooms())
@@ -184,6 +276,10 @@ public class Schedule {
                                     continue;
 
 
+                                Lecture lecture = new Lecture(subject,teacher,studentGroup,classroom);
+                                Schedule schedule = new Schedule(this);
+                                schedule.addLecture(lecture,i,j);
+                                schedules.add(schedule);
 
                             }
 
@@ -197,9 +293,13 @@ public class Schedule {
 
         }
 
-        return new ArrayList<>();
+        return schedules;
 
     }
+
+
+
+
     private boolean canAddStudents(StudentGroup studentGroup, int day , int period)
     {
         ArrayList<Lecture> lectures = schedule[day][period];
@@ -242,7 +342,7 @@ public class Schedule {
         }
         return true;
     }
-    boolean matchSubjectClassroom(Subject subject, ClassRoom classroom)
+    private boolean matchSubjectClassroom(Subject subject, ClassRoom classroom)
     {
         if((subject.getType() == ClassType.theoretical && classroom.getType() == ClassroomType.theater)
                 ||(subject.getType() == ClassType.practical && classroom.getType() == ClassroomType.lab))
@@ -316,4 +416,30 @@ public class Schedule {
         return false;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder str = new StringBuilder();
+
+        int i=1;
+        int j=1;
+        for (ArrayList<Lecture>[] x : schedule)
+        {
+            j=0;
+            for (ArrayList y : x)
+            {
+                j++;
+                str.append("(" + i +j +")");
+                if(y.isEmpty()) {
+                    str.append("empty" + " ");
+                }
+                else{
+                    str.append(y + " ");
+                }
+            }
+            str.append("\n");
+            i++;
+        }
+
+        return str.toString();
+    }
 }
