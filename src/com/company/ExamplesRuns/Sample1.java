@@ -1,21 +1,18 @@
-package com.company;
+package com.company.ExamplesRuns;
 
+import com.company.*;
 import com.company.building.Building;
-import de.vandermeer.asciitable.AsciiTable;
+import com.company.Subject;
+import com.company.Teacher;
+import com.company.Constants;
+import com.company.Schedule;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
-public class Main {
-
-
-
-    public static void main(String[] args) {
+public class Sample1 {
+    public static void main(String[] args)
+    {
         Constants.CLASSES_PER_day = 2;
         Constants.DAYS_PER_WEEK = 2;
         Constants.NUMBER_OF_LABS = 2;
@@ -65,19 +62,12 @@ public class Main {
         ArrayList<Schedule> schedules = schedule.getPossibleNextMoves();
 
 
-
-
-
-
-
         AStar astar = new AStar();
 
 
         astar.Search(schedule);
 
-
-
-
     }
+
 
 }

@@ -4,7 +4,6 @@ package com.company;
 import java.util.*;
 
 public class AStar {
-
     PriorityQueue<Schedule> pqueue ;
     HashSet<Schedule> visited = new HashSet<Schedule>();
     List<Schedule> acceptedStates;
@@ -12,9 +11,9 @@ public class AStar {
     {
         pqueue = new PriorityQueue<Schedule>(1, new Comparator<Schedule>() {
             public int compare(Schedule node1, Schedule node2) {
-                if (node1.getWeight() < node2.getWeight())
+                if (node1.getWeight()+node1.calculateHeuristic() < node2.calculateHeuristic()+node2.getWeight())
                     return -1;
-                else if (node1.getWeight() > node2.getWeight())
+                else if (node1.getWeight()+node1.calculateHeuristic() > node2.calculateHeuristic()+node2.getWeight())
                     return 1;
                 return 0;
             }
@@ -31,14 +30,14 @@ public class AStar {
         while(!pqueue.isEmpty())
         {
             v = pqueue.poll();
-           // v.print();
+            //v.print();
 
             if(v.isAccepted())
             {
                 acceptedStates.add(v);
                 System.out.print("accepted state\n");
                 v.print();
-                //break;
+                break;
             }
 
             for (Schedule schedule : possibleStates = v.getPossibleNextMoves()) {

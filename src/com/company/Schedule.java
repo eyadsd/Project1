@@ -140,7 +140,8 @@ public class Schedule {
     int numberOfBranches;
     int numberOfSections;
 
-    int weight=0;
+    int weight = 0;
+    int heuristic = 0;
 
     ArrayList<Subject> subjects;
     ArrayList<StudentGroup> studentGroups;
@@ -293,6 +294,7 @@ public class Schedule {
 
 
 
+
     }
 
     public ArrayList<Schedule> getPossibleNextMoves(){
@@ -381,13 +383,13 @@ public class Schedule {
         }
 
 
-        if (isPracticalAfterTheoritical(lecture,day,period)){
+        if (!isPracticalAfterTheoritical(lecture,day,period)){
 
             this.weight+=weight6;
         }
 
         if(!lecture.isTheoritical()){
-            if(isMoreThanOnePracticalLecture(lecture,day,period)){
+            if(!isMoreThanOnePracticalLecture(lecture,day,period)){
 
                 this.weight+=weight7;
             }
@@ -484,7 +486,7 @@ public class Schedule {
 
         }
 
-        return false;
+        return true;
 
     }
 
@@ -682,9 +684,23 @@ public class Schedule {
         at.setTextAlignment(TextAlignment.LEFT);
         at.setPaddingRight(5);
         at.getContext().setGrid(A7_Grids.minusBarPlusEquals());
-        System.out.println(at.render(120));
+        System.out.println(at.render(140));
 
         System.out.print("weight ="+weight+"\n");
 
     }
+    public int calculateHeuristic()
+    {
+        for(StudentGroup studentGroup: studentGroups )
+        {
+            heuristic += studentGroup.getAllSubjects().size();
+        }
+        return heuristic;
+    }
+
+    public int getHeuristic()
+    {
+        return this.heuristic;
+    }
 }
+

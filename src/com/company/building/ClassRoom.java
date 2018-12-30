@@ -33,8 +33,12 @@ public class ClassRoom {
 
     @Override
     public String toString() {
-        return
-                "classroom=" + id +
+        if(type == ClassroomType.lab)
+            return "lab=" + id +
+                    '}';
+        else
+            return
+                "theater=" + id +
                 '}';
     }
 
