@@ -40,4 +40,8 @@ class Section extends StudentGroup {
 
 
     }
+    public String toString()
+    {
+        return "section="+id;
+    }
 }

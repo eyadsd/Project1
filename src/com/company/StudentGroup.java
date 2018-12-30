@@ -60,9 +60,7 @@ public abstract class StudentGroup {
 
     @Override
     public String toString() {
-        return "StudentGroup{" +
-                ", id=" + id +
-                '}';
+        return "id ="+id;
     }
 
     @Override

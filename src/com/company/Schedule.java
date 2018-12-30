@@ -3,6 +3,14 @@ package com.company;
 import com.company.building.Building;
 import com.company.building.ClassRoom;
 import com.company.building.ClassroomType;
+import de.vandermeer.asciitable.AsciiTable;
+import de.vandermeer.asciithemes.TA_Grid;
+import de.vandermeer.asciithemes.TA_GridThemes;
+import de.vandermeer.asciithemes.a7.A7_Grids;
+import de.vandermeer.asciithemes.a8.A8_Grids;
+import de.vandermeer.asciithemes.u8.U8_Grids;
+import de.vandermeer.skb.interfaces.document.TableRowStyle;
+import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment;
 
 import java.util.*;
 
@@ -115,11 +123,10 @@ public class Schedule {
 
         @Override
         public String toString() {
-            return "L(" +
-                    "S=" + subject +
-                    ", T=" + teacher +
-                    ", D=" + division +
-                    ", C=" + classRoom +
+            return  "L(" +subject +
+                    " " + teacher +
+                    "<br>" + division +
+                    " " + classRoom +
                     ')';
         }
 
@@ -638,22 +645,46 @@ public class Schedule {
 
     public void print()
     {
+
+        AsciiTable at = new AsciiTable();
+        List<String> firstRow = new ArrayList<>();
+        firstRow.add("");
+        for(int i=0;i<classesPerDay;i++)
+        {
+            firstRow.add("period"+(i+1));
+        }
+        at.addRow(firstRow);
+        at.addRule();
+
         for(int i = 0;i<daysPerWeek;i++)
         {
+            List<String> columns = new ArrayList<String>();
+            columns.add("day"+ i);
+
             for(int j = 0;j<classesPerDay;j++)
             {
-                System.out.print("period"+i+" "+j);
+                StringBuilder builder = new StringBuilder();
+
                 for(Lecture lecture: schedule[i][j])
                 {
-                    System.out.print(lecture.toString());
-                    System.out.print("    ");
+                    builder.append(lecture.toString());
+                    builder.append("<br>");
                 }
+
+                columns.add(builder.toString());
+
             }
-            System.out.print("\n");
+            at.addRow(columns);
+            at.addRule();
+
 
         }
-        System.out.print("weight ="+weight);
-        System.out.print("\ndone\n\n");
+        at.setTextAlignment(TextAlignment.LEFT);
+        at.setPaddingRight(5);
+        at.getContext().setGrid(A7_Grids.minusBarPlusEquals());
+        System.out.println(at.render(120));
+
+        System.out.print("weight ="+weight+"\n");
 
     }
 }

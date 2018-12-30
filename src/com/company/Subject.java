@@ -42,9 +42,7 @@ public class Subject {
 
     @Override
     public String toString() {
-        return "Subject{" +
-                "class='" + className + '\'' +
-                '}';
+        return "subject=" + className;
     }
 
 

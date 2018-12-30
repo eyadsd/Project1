@@ -141,8 +141,6 @@ public class Teacher {
 
     @Override
     public String toString() {
-        return "Teacher{" +
-                "name='" + name + '\'' +
-                '}';
+        return "teacher=" + name;
     }
 }

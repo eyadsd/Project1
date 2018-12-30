@@ -55,4 +55,9 @@ public class Branch extends StudentGroup {
 
 
     }
+    public String toString()
+    {
+        return "Branch="+id;
+    }
+
 }
